@@ -8,16 +8,8 @@ import re
 import bcrypt
 load_dotenv()
 
-def get_secret(key):
-    # Works both locally (.env) and on Streamlit Cloud (st.secrets)
-    return st.secrets.get(key, os.getenv(key))
-
-api_key = get_secret("OPENAI_API_KEY")
-HASHED_PASSWORD = get_secret("HASHED_PASSWORD")
-
-if not HASHED_PASSWORD:
-    st.stop()
-HASHED_PASSWORD = HASHED_PASSWORD.encode("utf-8")
+api_key = os.getenv("OPENAI_API_KEY")
+HASHED_PASSWORD = os.getenv("HASHED_PASSWORD").encode("utf-8")
 
 DATABASE_SCHEMA = """
 Database Schema:
