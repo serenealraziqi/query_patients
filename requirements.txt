@@ -1,0 +1,6 @@
+streamlit
+pandas
+python-dotenv
+openai
+bcrypt
+psycopg2-binary

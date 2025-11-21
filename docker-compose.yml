@@ -1,0 +1,15 @@
+services: # Declare the services to run
+  ubuntu-service: # Name of the development service
+    build: . # Build the Dockerfile in the current directory
+    container_name: my-dev01 # Set a predictable container name
+    volumes: # Define storage mounts
+      - ./shared_folder:/shared_folder # Map host ./shared_folder to /shared_folder in the container for file sharing
+      - ubuntu-data:/root # Named volume to persist /root (including conda environments and settings)
+    ports: # Expose container ports on the host
+      - "8888:8888" 
+      - "8501:8501" # Map host port 8888 to container port 8888 for Jupyter access
+    stdin_open: true # Keep STDIN open for interactive sessions
+    tty: true # Allocate a TTY to improve interactive shell experience
+
+volumes: # Define named volumes
+  ubuntu-data: # Volume that persists data across rebuilds and restarts
