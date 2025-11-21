@@ -6,13 +6,19 @@ from openai import OpenAI # type: ignore
 import os
 import re
 import bcrypt
-
-
-# Load environment variables
 load_dotenv()
 
-api_key = os.getenv("OPENAI_API_KEY")
-HASHED_PASSWORD = os.getenv("HASHED_PASSWORD").encode("utf-8")
+def get_secret(key):
+    # Works both locally (.env) and on Streamlit Cloud (st.secrets)
+    return st.secrets.get(key, os.getenv(key))
+
+api_key = get_secret("OPENAI_API_KEY")
+HASHED_PASSWORD = get_secret("HASHED_PASSWORD")
+
+if not HASHED_PASSWORD:
+    st.stop()
+HASHED_PASSWORD = HASHED_PASSWORD.encode("utf-8")
+
 DATABASE_SCHEMA = """
 Database Schema:
 
@@ -108,10 +114,10 @@ def require_login():
 
 @st.cache_resource
 def get_db_url():
-    POSTGRES_USERNAME = os.getenv("POSTGRES_USERNAME")
-    POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-    POSTGRES_SERVER = os.getenv("POSTGRES_SERVER")
-    POSTGRES_DATABASE = os.getenv("POSTGRES_DATABASE")
+    POSTGRES_USERNAME = st.secrets["POSTGRES_USERNAME"]
+    POSTGRES_PASSWORD = st.secrets["POSTGRES_PASSWORD"]
+    POSTGRES_SERVER = st.secrets["POSTGRES_SERVER"]
+    POSTGRES_DATABASE = st.secrets["POSTGRES_DATABASE"]
     return f"postgresql://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DATABASE}"
 
 DATABASE_URL = get_db_url()
